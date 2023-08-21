@@ -1,7 +1,7 @@
 const express = require('express');
 const { default: mongoose } = require('mongoose');
 const dotenv = require('dotenv').config();
-
+const register = require('./routes/auth');
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -17,6 +17,8 @@ mongoose
 app.get('/', (req, res) => {
   res.send(`Hello Am Live ✨ now`);
 });
+
+app.use('/user', register);
 
 app.listen(PORT, () => {
   console.log(`server starting and run on port ${PORT}`);
