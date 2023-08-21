@@ -54,22 +54,23 @@ const loginSchema = Joi.object({
 });
 
 const login = async (req, res) => {
-  const user = await findOne({ email: req.body.email });
+  const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    return res.status(404).send('Incorrect email or password');
+    return res.status(400).send('Incorrect email or password');
   }
 
-  const checkPassword = await bcrypt.compare(user.password, req.body.password);
+  const checkPassword = await bcrypt.compare(req.body.password, user.password);
   if (!checkPassword) {
-    return res.status(404).send('Incorrect email or password');
+    return res.status(400).send('Incorrect email or password');
   }
 
   try {
-    const { error } = await loginSchema.varidateAsync(req.body);
+    const { error } = await loginSchema.validateAsync(req.body);
     if (error) {
       return res.status(401).send(error.detail[0].message);
+    } else {
+      return res.status(200).send(`${user.firstname} ${user.lastname}`);
     }
-    return res.status(200).send(`${user.firstname} ${user.last}`);
   } catch (error) {
     return res.status(401).send(error);
   }
