@@ -6,9 +6,9 @@ const Joi = require('@hapi/joi');
 
 const registerSchema = Joi.object({
   firstname: Joi.string().min(3).required(),
-  lastname: Joi.string().min(3).required(),
-  email: Joi.string().min(3).required(),
-  password: Joi.string().min(3).required(),
+  lastname: Joi.string().min(4).required(),
+  email: Joi.string().min(6).required(),
+  password: Joi.string().min(8).required(),
 });
 
 router.post('/register', async (req, res) => {
@@ -28,5 +28,16 @@ router.post('/register', async (req, res) => {
     password: hashedPassword,
   });
 
-  const saveUser = await user.save();
+  try {
+    const { error } = await registerSchema.validateAsync(req.body);
+
+    if (error) {
+      return res.status(400).send(error.detail[0].message);
+    } else {
+      const saveUser = await user.save();
+      return res.status(200).send('user created successfully');
+    }
+  } catch (error) {
+    return res.status(500).send(error);
+  }
 });
