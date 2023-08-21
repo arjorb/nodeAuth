@@ -69,10 +69,11 @@ const login = async (req, res) => {
     if (error) {
       return res.status(401).send(error.detail[0].message);
     } else {
-      return res.status(200).send(`${user.firstname} ${user.lastname}`);
+      const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+      return res.header('auth-token', token).send(token);
     }
   } catch (error) {
-    return res.status(401).send(error);
+    return res.status(500).send(error);
   }
 };
 module.exports = { register, login };
