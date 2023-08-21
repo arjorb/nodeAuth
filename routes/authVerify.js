@@ -10,7 +10,7 @@ const verify = (req, res, next) => {
     req.user = verified;
     next();
   } catch (error) {
-    res.status(500).send(error);
+    res.status(400).send('invalid token');
   }
 };
 

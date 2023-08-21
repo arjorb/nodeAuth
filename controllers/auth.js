@@ -35,7 +35,7 @@ const register = async (req, res) => {
     const { error } = await registerSchema.validateAsync(req.body);
 
     if (error) {
-      return res.status(400).send(error.detail[0].message);
+      return res.status(400).send(error.details[0].message);
     } else {
       const saveUser = await user.save();
       return res.status(200).send('user created successfully');
@@ -67,7 +67,7 @@ const login = async (req, res) => {
   try {
     const { error } = await loginSchema.validateAsync(req.body);
     if (error) {
-      return res.status(401).send(error.detail[0].message);
+      return res.status(401).send(error.details[0].message);
     } else {
       const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
       return res.header('auth-token', token).send(token);
